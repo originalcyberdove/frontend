@@ -56,7 +56,7 @@ export default function LandingPage() {
               className="relative overflow-hidden group inline-flex items-center justify-center gap-3 px-8 py-4 bg-green text-bg font-bold uppercase tracking-wider hover:bg-[#00e65f] transition-all rounded-none border border-green hover:shadow-[0_0_24px_rgba(0,200,83,0.4)]"
             >
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnPgo8cmVjdCB3aWR0aD0nNCcgaGVpZ2h0PSc0JyBmaWxsPSd0cmFuc3BhcmVudCcvPgo8cmVjdCB3aWR0aD0nMScgaGVpZ2h0PScxJyBmaWxsPSdyZ2JhKDAsMCwwLDAuMSknLz4KPC9zdmc+')] opacity-50 mix-blend-overlay group-hover:opacity-100 transition-opacity" />
-              <span>hhhhhhhhh</span>
+              <span>Analyze a Message</span>
               <svg 
                 className="w-5 h-5 transition-transform group-hover:translate-x-1" 
                 fill="none" 
