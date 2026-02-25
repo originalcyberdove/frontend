@@ -1,8 +1,8 @@
 import axios from "axios";
 import type {
-  DetectResult, ReportResponse, AdminStats,
-  DetectionLog, ReportedNumber, FlaggedNumber, FeedbackItem,
-  Language, Label,
+  DetectResult, RawBackendResult, ReportResponse,
+  AdminStats, DetectionLog, ReportedNumber, FlaggedNumber,
+  FeedbackItem, Language, Label, Risk,
 } from "@/types";
 
 // In dev, Vite proxies /api → http://localhost:8000
@@ -14,24 +14,79 @@ const client = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-// Attach JWT token to admin requests automatically
-client.interceptors.request.use((config) => {
-  const token = localStorage.getItem("pg_access_token");
-  if (token && config.url?.startsWith("/api/admin")) {
-    config.headers.Authorization = `Bearer ${token}`;
+// ── Helpers ─────────────────────────────────────────────────────────────────
+
+/** Map backend classification → frontend label */
+function toLabel(cls: RawBackendResult["classification"]): Label {
+  return cls === "safe" ? "legitimate" : "spam";
+}
+
+/** Map backend risk_score → frontend Risk enum */
+function toRisk(score: number, cls: RawBackendResult["classification"]): Risk {
+  if (cls === "phishing" || score >= 8) return "High";
+  if (cls === "suspicious" || score >= 4) return "Medium";
+  return "Low";
+}
+
+/** Map indicator keywords to fraud category slugs for the UI */
+function toCategories(indicators: string[]): string[] {
+  const mapping: Record<string, string> = {
+    bvn: "bank_identity", "account number": "bank_identity", pin: "bank_identity",
+    password: "bank_identity", atm: "bank_identity", bank: "bank_identity",
+    jamb: "education_scam",
+    prize: "prize_lottery", winner: "prize_lottery", won: "prize_lottery",
+    congratulations: "prize_lottery", reward: "prize_lottery",
+    free: "prize_lottery", cash: "investment_fraud",
+  };
+  const cats = new Set<string>();
+  for (const ind of indicators) {
+    const cat = mapping[ind.toLowerCase()];
+    if (cat) cats.add(cat);
   }
-  return config;
-});
+  return [...cats];
+}
+
+/** Generate a simple client-side detection ID (backend doesn't provide one) */
+function generateDetectionId(): string {
+  return `det_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+}
 
 // ── Public API ──────────────────────────────────────────────────────────────
+
+/**
+ * Detect SMS fraud via POST /api/check-message/
+ * Maps the raw backend response into the DetectResult shape
+ * the rest of the frontend expects.
+ */
 export async function detectSMS(
   message: string,
   language: Language = "en"
 ): Promise<DetectResult> {
-  const { data } = await client.post<DetectResult>("/api/detect/", { message, language });
-  return data;
+  const { data } = await client.post<RawBackendResult>("/api/check-message/", {
+    message,
+    language,
+  });
+
+  return {
+    label:          toLabel(data.classification),
+    confidence:     data.confidence,
+    risk_level:     toRisk(data.risk_score, data.classification),
+    keywords:       data.indicators,
+    categories:     toCategories(data.indicators),
+    rf_proba:       data.spam_probability,
+    svm_proba:      data.legit_probability,
+    mode:           data.model_loaded ? "ml" : "rule_based",
+    detection_id:   generateDetectionId(),
+    recommendation: data.recommendation,
+    message:        data.message,
+  };
 }
 
+/**
+ * Get audio blob for TTS.
+ * Will work automatically once backend adds POST /api/audio/.
+ * Until then, useAudio.ts falls back to browser SpeechSynthesis.
+ */
 export async function getAudioBlob(
   result: { label: string; confidence: number; risk_level: string },
   language: Language = "en"
@@ -44,6 +99,10 @@ export async function getAudioBlob(
   return new Blob([response.data], { type: "audio/mpeg" });
 }
 
+/**
+ * Report a scam number.
+ * Will work automatically once backend adds POST /api/report/.
+ */
 export async function reportNumber(
   number: string,
   message: string,
@@ -56,6 +115,10 @@ export async function reportNumber(
   return data;
 }
 
+/**
+ * Submit feedback on a detection result.
+ * Will work automatically once backend adds POST /api/feedback/.
+ */
 export async function submitFeedback(
   detection_id: string,
   original_label: Label,
@@ -68,6 +131,11 @@ export async function submitFeedback(
 }
 
 // ── Auth ────────────────────────────────────────────────────────────────────
+
+/**
+ * Admin login via JWT.
+ * Will work automatically once backend adds POST /api/auth/token/.
+ */
 export async function loginAdmin(
   username: string,
   password: string
@@ -90,6 +158,7 @@ export function isLoggedIn(): boolean {
 }
 
 // ── Admin API ───────────────────────────────────────────────────────────────
+
 export async function getAdminStats(): Promise<AdminStats> {
   const { data } = await client.get<AdminStats>("/api/admin/stats/");
   return data;

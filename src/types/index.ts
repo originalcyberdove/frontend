@@ -3,16 +3,37 @@ export type Label    = "spam" | "legitimate";
 export type Risk     = "Low" | "Medium" | "High";
 export type Mode     = "ml" | "rule_based";
 
+/**
+ * Mapped result that the frontend uses.
+ * The API adapter in lib/api.ts translates the raw backend
+ * response into this shape so every component stays unchanged.
+ */
 export interface DetectResult {
   label:        Label;
   confidence:   number;
   risk_level:   Risk;
   keywords:     string[];
   categories:   string[];
-  rf_proba:     number;
-  svm_proba:    number;
+  rf_proba:     number;      // mapped from spam_probability
+  svm_proba:    number;      // backend has no SVM — mirrors rf_proba
   mode:         Mode;
-  detection_id: string;
+  detection_id: string;      // generated client-side (backend doesn't provide one)
+  recommendation: string;
+  message:        string;    // human-readable verdict text from backend
+}
+
+/** Raw response from POST /api/check-message/ */
+export interface RawBackendResult {
+  prediction:       string;
+  classification:   "phishing" | "suspicious" | "safe";
+  spam_probability: number;
+  legit_probability: number;
+  confidence:       number;
+  message:          string;
+  recommendation:   string;
+  indicators:       string[];
+  risk_score:       number;
+  model_loaded:     boolean;
 }
 
 export interface ReportResponse {

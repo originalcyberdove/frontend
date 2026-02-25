@@ -78,11 +78,18 @@ export default function ResultCard({ result, language, message }: Props) {
           />
         </div>
         <div className="flex justify-between text-xs text-dim font-mono">
-          <span>RF: {result.rf_proba}%</span>
-          <span>SVM: {result.svm_proba}%</span>
-          <span className="capitalize">{result.mode === "ml" ? "🤖 ML Model" : "📋 Rule Engine"}</span>
+          <span>Spam: {result.rf_proba}%</span>
+          <span>Legit: {result.svm_proba}%</span>
+          <span className="capitalize">{result.mode === "ml" ? "ML Model" : "Rule Engine"}</span>
         </div>
       </div>
+
+      {/* Recommendation */}
+      {result.recommendation && (
+        <div className="p-3 rounded-lg bg-surface2 border border-border">
+          <p className="text-xs font-mono text-mid leading-relaxed">{result.recommendation}</p>
+        </div>
+      )}
 
       {/* Keywords */}
       {result.keywords.length > 0 && (

@@ -37,4 +37,14 @@
 
 @layer utilities {
   .text-balance { text-wrap: balance; }
+
+  .bg-radial-vignette {
+    background: radial-gradient(ellipse at center, transparent 40%, #070d09 100%);
+  }
+}
+
+/* Fraud ticker scroll animation */
+@keyframes scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-33.333%); }
 }
