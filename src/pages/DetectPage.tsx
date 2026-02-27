@@ -70,11 +70,30 @@ export default function DetectPage() {
         >
           {loading ? "Analyzing…" : "Analyze Message"}
         </button>
+
+        {/* Error */}
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="p-4 rounded-xl bg-danger/10 border border-danger/30 text-danger text-sm font-mono"
+            >
+              ⚠ {error}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Result */}
+        <AnimatePresence>
+          {result && <ResultCard result={result} language={language} message={message} />}
+        </AnimatePresence>
       </div>
 
       {/* Examples */}
       <div className="space-y-2">
-        <p className="text-xs text-dim font-mono uppercase tracking-wider">Try an example</p>
+        <p className="text-xs text-dim font-mono uppercase tracking-wider">Samples</p>
         <div className="grid gap-2">
           {EXAMPLES.map((ex, i) => (
             <button
@@ -87,25 +106,6 @@ export default function DetectPage() {
           ))}
         </div>
       </div>
-
-      {/* Error */}
-      <AnimatePresence>
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="p-4 rounded-xl bg-danger/10 border border-danger/30 text-danger text-sm font-mono"
-          >
-            ⚠ {error}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Result */}
-      <AnimatePresence>
-        {result && <ResultCard result={result} language={language} message={message} />}
-      </AnimatePresence>
     </div>
   );
 }

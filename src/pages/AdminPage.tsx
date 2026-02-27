@@ -73,15 +73,15 @@ function LoginForm({ onLogin }: { onLogin: () => void }) {
             {loading ? "Signing in…" : "Sign In"}
           </button>
         </div>
-        <p className="text-center text-xs text-dim font-mono">
-          Create admin: <code>python manage.py createsuperuser</code>
-        </p>
+      {/* Header   <p className="text-center text-xs text-dim font-mono">
+          Create admin: <code>python manage.py createsuperuser</code> 
+        </p> */}
       </div>
     </div>
   );
 }
 
-// ── Dashboard ─────────────────────────────────────────────────────────────────
+// ── Dashboard ──
 function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [tab,      setTab]      = useState<Tab>("overview");
   const [stats,    setStats]    = useState<AdminStats | null>(null);
@@ -327,7 +327,7 @@ function NumbersTab({ reported, flagged }: { reported: ReportedNumber[]; flagged
   );
 }
 
-// ── Feedback Tab ──────────────────────────────────────────────────────────────
+// ── Feedback Tab ──────────────────────────────────────────────
 function FeedbackTab({ feedback }: { feedback: FeedbackItem[] }) {
   if (!feedback.length) return <Empty msg="No unprocessed feedback yet." />;
   return (
@@ -353,7 +353,7 @@ function FeedbackTab({ feedback }: { feedback: FeedbackItem[] }) {
         </tbody>
       </table>
       <div className="px-4 py-3 border-t border-border text-xs text-dim font-mono">
-        {feedback.length} corrections pending retraining. Run <code>python ml/train.py</code> after exporting.
+        {feedback.length} corrections pending retraining. <code></code>
       </div>
     </div>
   );

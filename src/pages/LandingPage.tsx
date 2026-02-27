@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-/* ------------------------------------------------------------------ */
-/*  ICON COMPONENTS (inline SVG — no emoji)                            */
-/* ------------------------------------------------------------------ */
+
+/*  ICON COMPONENTS (inline SVG                          */
+
 
 const IC = {
   brain: (
@@ -116,10 +116,10 @@ const IC = {
 /* ------------------------------------------------------------------ */
 
 const STATS = [
-  { value: "187K+", label: "SMS Trained On" },
+  { value: "4K+", label: "SMS Trained On" },
   { value: "97.3%", label: "Detection Accuracy" },
   { value: "< 200ms", label: "Avg Response" },
-  { value: "6", label: "Languages Supported" },
+  { value: "5", label: "Languages Supported" },
 ];
 
 const FEATURES = [
@@ -127,17 +127,17 @@ const FEATURES = [
     icon: IC.brain,
     tag: "ML Engine",
     title: "Nigerian-Tuned AI",
-    desc: "Random Forest model trained on 187K+ Nigerian SMS samples — BVN scams, Ponzi alerts, JAMB fraud.",
+    desc: "Random Forest model trained on 4K+ Nigerian SMS samples — BVN scams, Ponzi alerts, JAMB fraud.",
   },
   {
     icon: IC.language,
     tag: "Multilingual",
     title: "Pidgin · Yoruba · Igbo · Hausa",
-    desc: "Detects fraud in 6+ Nigerian languages. Scammers switch dialects — our AI follows.",
+    desc: "Detects fraud in 4 Nigerian languages. Scammers switch dialects — our AI follows.",
   },
   {
     icon: IC.speaker,
-    tag: "YarnGPT",
+    tag: "AUDIO PROMPT",
     title: "Audio Warnings",
     desc: "AI reads results aloud in Nigerian-accented speech. Perfect for low-literacy users.",
   },
@@ -179,7 +179,7 @@ const HOW_IT_WORKS = [
   { n: "02", title: "TF-IDF Extract", desc: "50K n-gram features extracted, weighted for Nigerian fraud vocabulary." },
   { n: "03", title: "Random Forest", desc: "187K-trained ensemble with predict_proba() — no black boxes." },
   { n: "04", title: "Keyword Boost", desc: "Nigerian-specific layer: BVN, JAMB, GTB, OTP, 'double money' patterns." },
-  { n: "05", title: "Result + Audio", desc: "Confidence %, risk level, suspicious words — read aloud by YarnGPT." },
+  { n: "05", title: "Result + Audio", desc: "Confidence %, risk level, suspicious words — read aloud by our AI." },
 ];
 
 const LANGUAGES = [
@@ -198,7 +198,7 @@ const PRICING = [
     accent: "#00c853",
     featured: false,
     cta: "Start Detecting →",
-    features: ["Unlimited SMS scans", "6 Nigerian languages", "Audio warnings (YarnGPT)", "Community reporting", "Basic risk analysis"],
+    features: ["Unlimited SMS scans", "4 Nigerian languages", "Audio warnings", "Community reporting", "Basic risk analysis"],
   },
   {
     tier: "Pro",
@@ -387,7 +387,7 @@ export default function LandingPage() {
           </h2>
           <p className="text-mid font-mono text-sm md:text-base max-w-2xl mx-auto mt-4 leading-relaxed">
             Generic spam filters fail Nigerians. Fraudlock is trained on Nigerian
-            SMS patterns, speaks Nigerian languages, and shares intelligence with telcos.
+            SMS patterns, speaks Nigerian languages, and shares intelligence with telcommunication companies.
           </p>
         </motion.div>
 
