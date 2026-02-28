@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { useDetect } from "@/hooks/useDetect";
 import ResultCard from "@/components/ResultCard";
 import LanguageSelector from "@/components/LanguageSelector";
@@ -13,9 +14,35 @@ const EXAMPLES = [
 ];
 
 export default function DetectPage() {
+  const { t, i18n } = useTranslation();
+
+  // Keep language state in sync with i18n
+  // i18n.language may be "en-US" from browser — normalise to base code
+  const normalise = (code: string): Language => {
+    const base = code.split("-")[0] as Language;
+    const valid: Language[] = ["en", "pid", "yo", "ha", "ig"];
+    return valid.includes(base) ? base : "en";
+  };
+
   const [message,  setMessage]  = useState("");
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguage] = useState<Language>(
+    normalise(i18n.language)
+  );
   const { result, loading, error, analyze, reset } = useDetect();
+
+  // When user picks a language in the selector:
+  //   1. Update local state (sent to backend)
+  //   2. Update i18n (changes UI language)
+  function handleLanguageChange(lang: Language) {
+    setLanguage(lang);
+    i18n.changeLanguage(lang);
+  }
+
+  // If i18n language changes from outside (e.g. localStorage on load),
+  // keep local language state in sync
+  useEffect(() => {
+    setLanguage(normalise(i18n.language));
+  }, [i18n.language]);
 
   function handleSubmit() {
     if (!message.trim() || loading) return;
@@ -29,21 +56,23 @@ export default function DetectPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 space-y-8">
+
       {/* Header */}
       <div className="space-y-2">
         <h1 className="text-3xl font-black text-white">
-          SMS <span className="text-green">Fraud Detector</span>
+          {t("detect_title_1")} <span className="text-green">{t("detect_title_2")}</span>
         </h1>
         <p className="text-mid text-sm">
-          Paste any SMS to check if it's a phishing attempt.
-          Powered by TF-IDF + Random Forest + SVM ensemble.
+          {t("detect_subtitle")}
         </p>
       </div>
 
-      {/* Language */}
+      {/* Language selector — now controls both UI and backend */}
       <div className="space-y-2">
-        <p className="text-xs text-dim font-mono uppercase tracking-wider">Language</p>
-        <LanguageSelector value={language} onChange={setLanguage} />
+        <p className="text-xs text-dim font-mono uppercase tracking-wider">
+          {t("detect_language_label")}
+        </p>
+        <LanguageSelector value={language} onChange={handleLanguageChange} />
       </div>
 
       {/* Input */}
@@ -51,15 +80,18 @@ export default function DetectPage() {
         <textarea
           value={message}
           onChange={(e) => { setMessage(e.target.value); reset(); }}
-          placeholder="Paste SMS message here…"
+          placeholder={t("detect_placeholder")}
           rows={5}
           maxLength={1600}
           className="w-full bg-surface2 border border-border rounded-xl p-4 text-white placeholder-dim font-mono text-sm resize-none focus:outline-none focus:border-green transition-colors"
         />
         <div className="flex items-center justify-between text-xs text-dim font-mono">
           <span>{message.length} / 1600</span>
-          <button onClick={() => { setMessage(""); reset(); }} className="hover:text-mid transition-colors">
-            Clear
+          <button
+            onClick={() => { setMessage(""); reset(); }}
+            className="hover:text-mid transition-colors"
+          >
+            {t("detect_clear")}
           </button>
         </div>
 
@@ -68,7 +100,7 @@ export default function DetectPage() {
           disabled={!message.trim() || loading}
           className="w-full py-3 rounded-xl bg-green text-bg font-bold text-sm tracking-wide hover:bg-green/90 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {loading ? "Analyzing…" : "Analyze Message"}
+          {loading ? t("detect_analyzing") : t("detect_analyze_btn")}
         </button>
 
         {/* Error */}
@@ -87,13 +119,17 @@ export default function DetectPage() {
 
         {/* Result */}
         <AnimatePresence>
-          {result && <ResultCard result={result} language={language} message={message} />}
+          {result && (
+            <ResultCard result={result} language={language} message={message} />
+          )}
         </AnimatePresence>
       </div>
 
       {/* Examples */}
       <div className="space-y-2">
-        <p className="text-xs text-dim font-mono uppercase tracking-wider">Samples</p>
+        <p className="text-xs text-dim font-mono uppercase tracking-wider">
+          {t("detect_samples_label")}
+        </p>
         <div className="grid gap-2">
           {EXAMPLES.map((ex, i) => (
             <button
@@ -106,6 +142,7 @@ export default function DetectPage() {
           ))}
         </div>
       </div>
+
     </div>
   );
 }

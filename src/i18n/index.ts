@@ -13,11 +13,11 @@ i18n
   .use(initReactI18next)
   .init({
     resources: {
-      en:  { translation: en },
-      pid: { translation: pid },
-      yo:  { translation: yo },
-      ha:  { translation: ha },
-      ig:  { translation: ig },
+      en:  { translation: en.translation },
+      pid: { translation: pid.translation },
+      yo:  { translation: yo.translation },
+      ha:  { translation: ha.translation },
+      ig:  { translation: ig.translation },
     },
     fallbackLng: 'en',
     detection: {

@@ -133,6 +133,22 @@
     "detect_clear": "Hichapụ",
     "detect_analyzing": "Na-enyocha…",
     "detect_analyze_btn": "Nyochaa Ozi",
-    "detect_samples_label": "Ọmụmaatụ Ozi"
+    "detect_samples_label": "Ọmụmaatụ Ozi",
+    "report_title_1": "Kọọ",
+    "report_title_2": "Ọnụọgụ Aghụghọ",
+    "report_subtitle": "Kọọ ọnụọgụ ndị zigara gị ozi aghụghọ. Ọnụọgụ ndị nwere akụkọ 20+ a ga-eziga ha telcos ka ha gbochie ya.",
+    "report_step_1": "I kọọ ọnụọgụ aghụghọ",
+    "report_step_2": "Obodo kwado ya",
+    "report_step_3": "Telcos gbochie ọnụọgụ ahụ",
+    "report_phone_label": "Ọnụọgụ Ekwentị *",
+    "report_phone_placeholder": "08012345678 ma ọ bụ +2348012345678",
+    "report_message_label": "Ọmụmaatụ Ozi (ọ dịghị mkpa)",
+    "report_message_placeholder": "Tinye ozi aghụghọ i natara…",
+    "report_submitting": "Na-eziga…",
+    "report_submit_btn": "Zipu Akụkọ",
+    "report_success_title": "✓ Ezigara akụkọ!",
+    "report_total_label": "Ngụkọta akụkọ:",
+    "report_auto_flagged": "🔴 Akọwapụtara ozugbo maka telcos!",
+    "report_progress": "{{count}} / {{threshold}} akụkọ dị mkpa maka auto-flag"
   }
 }

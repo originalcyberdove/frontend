@@ -133,6 +133,22 @@
     "detect_clear": "Clear",
     "detect_analyzing": "Analyzing…",
     "detect_analyze_btn": "Analyze Message",
-    "detect_samples_label": "Samples"
+    "detect_samples_label": "Samples",
+    "report_title_1": "Report",
+    "report_title_2": "Scam Number",
+    "report_subtitle": "Report numbers that sent you fraud or phishing messages. Numbers with 20+ reports are auto-flagged and sent to telcos for blocking.",
+    "report_step_1": "You report a scam number",
+    "report_step_2": "Community confirms it",
+    "report_step_3": "Telcos block the number",
+    "report_phone_label": "Phone Number *",
+    "report_phone_placeholder": "08012345678 or +2348012345678",
+    "report_message_label": "Sample Message (optional)",
+    "report_message_placeholder": "Paste the fraud message you received…",
+    "report_submitting": "Submitting…",
+    "report_submit_btn": "Submit Report",
+    "report_success_title": "✓ Report submitted!",
+    "report_total_label": "Total reports:",
+    "report_auto_flagged": "🔴 Auto-flagged for telcos!",
+    "report_progress": "{{count}} / {{threshold}} reports needed to auto-flag"
   }
 }

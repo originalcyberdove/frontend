@@ -133,6 +133,22 @@
     "detect_clear": "Share",
     "detect_analyzing": "Yana bincike…",
     "detect_analyze_btn": "Bincika Saƙo",
-    "detect_samples_label": "Samfuran Saƙo"
+    "detect_samples_label": "Samfuran Saƙo",
+    "report_title_1": "Rahoto",
+    "report_title_2": "Lambar Zamba",
+    "report_subtitle": "Ba da rahoto lambobin da suka aiko maka saƙon zamba. Lambobin da ke da rahoto 20+ ana aika su zuwa kamfanonin tarho.",
+    "report_step_1": "Ka ba da rahoto lambar zamba",
+    "report_step_2": "Al'umma ta tabbatar",
+    "report_step_3": "Telcos sun toshe lambar",
+    "report_phone_label": "Lambar Wayar *",
+    "report_phone_placeholder": "08012345678 ko +2348012345678",
+    "report_message_label": "Samfurin Saƙo (zaɓi)",
+    "report_message_placeholder": "Liqa saƙon zamba da ka karba…",
+    "report_submitting": "Ana aika…",
+    "report_submit_btn": "Aika Rahoto",
+    "report_success_title": "✓ An aika rahoto!",
+    "report_total_label": "Jimlar rahotanni:",
+    "report_auto_flagged": "🔴 An nuna kai tsaye ga telcos!",
+    "report_progress": "{{count}} / {{threshold}} rahotanni da ake bukata don auto-flag"
   }
 }

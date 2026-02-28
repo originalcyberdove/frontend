@@ -133,6 +133,22 @@
     "detect_clear": "Pa Run",
     "detect_analyzing": "N ṣe itupalẹ…",
     "detect_analyze_btn": "Ṣe Itupalẹ Ifiranṣẹ",
-    "detect_samples_label": "Awọn Apẹẹrẹ"
+    "detect_samples_label": "Awọn Apẹẹrẹ",
+    "report_title_1": "Jabo",
+    "report_title_2": "Nọmba Aṣàrìídé",
+    "report_subtitle": "Jabo awọn nọmba ti o fi awọn ifiranṣẹ jibiti ranṣẹ si ọ. Awọn nọmba ti o ni awọn ìjábọ̀ 20+ yoo firanṣẹ si awọn telco.",
+    "report_step_1": "O jabo nọmba jibiti",
+    "report_step_2": "Àwùjọ jẹrì rẹ",
+    "report_step_3": "Telcos dina nọmba naa",
+    "report_phone_label": "Nọmba Fóònù *",
+    "report_phone_placeholder": "08012345678 tabi +2348012345678",
+    "report_message_label": "Apẹẹrẹ Ifiranṣẹ (aṣayan)",
+    "report_message_placeholder": "Lẹ ifiranṣẹ jibiti ti o gba…",
+    "report_submitting": "N firanṣẹ…",
+    "report_submit_btn": "Fi Ìjábọ̀ Sí",
+    "report_success_title": "✓ Ìjábọ̀ ti fi sí!",
+    "report_total_label": "Àpapọ̀ àwọn ìjábọ̀:",
+    "report_auto_flagged": "🔴 Ti samisi aifọwọyi fun telcos!",
+    "report_progress": "{{count}} / {{threshold}} àwọn ìjábọ̀ tó nílò fún asia-aifọwọyi"
   }
 }

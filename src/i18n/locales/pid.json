@@ -133,6 +133,22 @@
     "detect_clear": "Clear",
     "detect_analyzing": "E dey analyze…",
     "detect_analyze_btn": "Check This Message",
-    "detect_samples_label": "Sample Messages"
+    "detect_samples_label": "Sample Messages",
+    "report_title_1": "Report",
+    "report_title_2": "Scam Number",
+    "report_subtitle": "Report number wey send you fraud or phishing message. If 20+ people report am, e go auto-flag and dem go send am go telcos.",
+    "report_step_1": "You report scam number",
+    "report_step_2": "Community confirm am",
+    "report_step_3": "Telcos go block the number",
+    "report_phone_label": "Phone Number *",
+    "report_phone_placeholder": "08012345678 or +2348012345678",
+    "report_message_label": "Sample Message (optional)",
+    "report_message_placeholder": "Paste the fraud message wey you receive…",
+    "report_submitting": "E dey submit…",
+    "report_submit_btn": "Submit Report",
+    "report_success_title": "✓ Report don submit!",
+    "report_total_label": "Total reports:",
+    "report_auto_flagged": "🔴 Auto-flagged for telcos!",
+    "report_progress": "{{count}} / {{threshold}} reports wey dem need to auto-flag"
   }
 }
