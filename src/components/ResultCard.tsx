@@ -55,8 +55,13 @@ export default function ResultCard({ result, language, message }: Props) {
           disabled={audioLoading}
           className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-surface2 text-mid hover:text-green hover:border-green text-sm font-mono transition-all disabled:opacity-50"
         >
-          {audioLoading ? "⏳" : playing ? "⏸" : "🔊"}
-          <span>{playing ? "Stop" : "Listen"}</span>
+          {audioLoading ? (
+  <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+  </svg>
+) : playing ? "⏸" : "🔊"}
+<span>{audioLoading ? "Loading…" : playing ? "Stop" : "Listen"}</span>
         </button>
       </div>
 
@@ -80,7 +85,7 @@ export default function ResultCard({ result, language, message }: Props) {
         <div className="flex justify-between text-xs text-dim font-mono">
           <span>Spam: {result.rf_proba}%</span>
           <span>Legit: {result.svm_proba}%</span>
-          <span className="capitalize">{result.mode === "ml" ? "ML Model" : "Rule Engine"}</span>
+          <span className="capitalize">{result.mode === "ml" ? "" : ""}</span>
         </div>
       </div>
 
@@ -91,8 +96,8 @@ export default function ResultCard({ result, language, message }: Props) {
         </div>
       )}
 
-      {/* Keywords */}
-      {result.keywords.length > 0 && (
+      {/* Keywords 
+     // {result.keywords.length > 0 && (
         <div className="space-y-2">
           <p className="text-xs font-mono text-dim uppercase tracking-wider">Suspicious Keywords</p>
           <div className="flex flex-wrap gap-2">
@@ -103,7 +108,7 @@ export default function ResultCard({ result, language, message }: Props) {
             ))}
           </div>
         </div>
-      )}
+      )}*/}
 
       {/* Categories */}
       {result.categories.length > 0 && (

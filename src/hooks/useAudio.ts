@@ -9,11 +9,13 @@ export function useAudio() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const play = useCallback(async (
-    result: { label: string; confidence: number; risk_level: string },
+    result: { label: string; confidence: number; risk_level: string; recommendation?: string },
     language: Language
   ) => {
+    // Toggle off if already playing
     if (playing) {
       audioRef.current?.pause();
+      window.speechSynthesis.cancel();
       setPlaying(false);
       return;
     }
@@ -22,6 +24,7 @@ export function useAudio() {
     setError(null);
 
     try {
+      // Try YarnGPT via backend
       const blob = await getAudioBlob(result, language);
       const url  = URL.createObjectURL(blob);
       const audio = new Audio(url);
@@ -33,9 +36,15 @@ export function useAudio() {
       await audio.play();
       setPlaying(true);
     } catch {
-      // Fallback to browser TTS if backend audio fails
+      // Fallback to browser TTS if YarnGPT fails
       try {
-        const spoken = buildFallbackText(result.label, result.confidence, result.risk_level, language);
+        const spoken = buildFallbackText(
+          result.label,
+          result.confidence,
+          result.risk_level,
+          result.recommendation ?? '',
+          language,
+        );
         const utter  = new SpeechSynthesisUtterance(spoken);
         utter.lang   = langMap[language] ?? "en-NG";
         utter.rate   = 0.88;
@@ -44,6 +53,7 @@ export function useAudio() {
         setPlaying(true);
       } catch {
         setError("Audio unavailable.");
+        setPlaying(false);
       }
     } finally {
       setLoading(false);
@@ -59,23 +69,44 @@ export function useAudio() {
   return { play, stop, playing, loading, error };
 }
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
 const langMap: Record<string, string> = {
   en: "en-NG", pid: "en-NG", yo: "yo", ha: "ha", ig: "ig",
 };
 
-function buildFallbackText(label: string, confidence: number, risk: string, lang: string): string {
+function buildFallbackText(
+  label: string,
+  confidence: number,
+  risk: string,
+  recommendation: string,
+  lang: string,
+): string {
   const c = Math.round(confidence);
+  const rec = recommendation || '';
+
   const templates: Record<string, Record<string, string>> = {
-    en:  { spam: `Warning! This SMS is spam. Confidence ${c} percent. Risk: ${risk}. Do not share personal details.`,
-           legitimate: `This message appears legitimate. Confidence ${c} percent.` },
-    pid: { spam: `Warning! This SMS na scam. ${c} percent confidence. Risk: ${risk}. No share your details.`,
-           legitimate: `This message dey clean. ${c} percent confidence.` },
-    yo:  { spam: `Ìkìlọ̀! Ifiranṣẹ yii jẹ spam. Igbẹkẹle ${c} ogorun. Ipele ewu: ${risk}.`,
-           legitimate: `Ifiranṣẹ yii dabi ẹnipe o jẹ gidi. Igbẹkẹle ${c} ogorun.` },
-    ha:  { spam: `Gargadi! Wannan SMS zamba ne. Tabbas ${c} bisa dari. Haɗari: ${risk}.`,
-           legitimate: `Wannan sakon yana da inganci. Tabbas ${c} bisa dari.` },
-    ig:  { spam: `Ọ dị njọ! Ozi a bụ aghụghọ. Ntụkwasị obi ${c} n'otu narị. Ihe egwu: ${risk}.`,
-           legitimate: `Ozi a yiri ka ọ dị mọọ. Ntụkwasị obi ${c} n'otu narị.` },
+    en: {
+      spam:       `Warning! This SMS is spam. Confidence ${c} percent. Risk: ${risk}. ${rec}`,
+      legitimate: `This message appears legitimate. Confidence ${c} percent. ${rec}`,
+    },
+    pid: {
+      spam:       `Warning! This SMS na scam. ${c} percent confidence. Risk: ${risk}. ${rec}`,
+      legitimate: `This message dey clean. ${c} percent confidence. ${rec}`,
+    },
+    yo: {
+      spam:       `Ìkìlọ̀! Ifiranṣẹ yii jẹ spam. Igbẹkẹle ${c} ogorun. Ipele ewu: ${risk}.`,
+      legitimate: `Ifiranṣẹ yii dabi ẹnipe o jẹ gidi. Igbẹkẹle ${c} ogorun.`,
+    },
+    ha: {
+      spam:       `Gargadi! Wannan SMS zamba ne. Tabbas ${c} bisa dari. Haɗari: ${risk}.`,
+      legitimate: `Wannan sakon yana da inganci. Tabbas ${c} bisa dari.`,
+    },
+    ig: {
+      spam:       `Ọ dị njọ! Ozi a bụ aghụghọ. Ntụkwasị obi ${c} n'otu narị. Ihe egwu: ${risk}.`,
+      legitimate: `Ozi a yiri ka ọ dị mọọ. Ntụkwasị obi ${c} n'otu narị.`,
+    },
   };
-  return templates[lang]?.[label] ?? templates.en[label];
+
+  return templates[lang]?.[label] ?? templates.en[label] ?? '';
 }

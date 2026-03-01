@@ -73,7 +73,7 @@ export default function DetectPage() {
           {t("detect_language_label")}
         </p>
         <LanguageSelector value={language} onChange={handleLanguageChange} />
-      </div>
+      </div> 
 
       {/* Input */}
       <div className="space-y-3">

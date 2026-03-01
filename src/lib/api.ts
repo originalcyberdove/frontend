@@ -84,21 +84,24 @@ export async function detectSMS(
 
 /**
  * Get audio blob for TTS.
- * Will work automatically once backend adds POST /api/audio/.
- * Until then, useAudio.ts falls back to browser SpeechSynthesis.
  */
 export async function getAudioBlob(
-  result: { label: string; confidence: number; risk_level: string },
+  result: { label: string; confidence: number; risk_level: string; recommendation?: string },
   language: Language = "en"
 ): Promise<Blob> {
   const response = await client.post(
     "/api/audio/",
-    { ...result, language },
+    {
+      label:          result.label,
+      confidence:     result.confidence,
+      risk_level:     result.risk_level,
+      recommendation: (result as any).recommendation ?? "",
+      language,
+    },
     { responseType: "blob" }
   );
   return new Blob([response.data], { type: "audio/mpeg" });
 }
-
 /**
  * Report a scam number.
  * Will work automatically once backend adds POST /api/report/.
