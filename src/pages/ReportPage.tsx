@@ -113,13 +113,7 @@ export default function ReportPage() {
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-xs text-dim font-mono uppercase tracking-wider">
-            {t("detect_language_label")}
-          </label>
-          <LanguageSelector value={language} onChange={handleLanguageChange} />
-        </div>
-
+      
         <button
           onClick={handleSubmit}
           disabled={!number.trim() || loading}

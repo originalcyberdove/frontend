@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { LabelBadge, RiskBadge } from "./RiskBadge";
 import { useAudio } from "@/hooks/useAudio";
 import { submitFeedback } from "@/lib/api";
 import { useState } from "react";
 import clsx from "clsx";
-import type { DetectResult, Language, Label, Mode } from "@/types";
+import type { DetectResult, Language, Label } from "@/types";
 import { CATEGORY_LABELS } from "@/types";
 
 interface Props {
@@ -15,12 +16,12 @@ interface Props {
 }
 
 export default function ResultCard({ result, language, message }: Props) {
+  const { t } = useTranslation();
   const { play, playing, loading: audioLoading } = useAudio();
   const [feedbackSent,  setFeedbackSent]  = useState(false);
   const [feedbackError, setFeedbackError] = useState(false);
 
   const isSpam = result.label === "spam";
-  const accent = isSpam ? "danger" : "green";
 
   async function handleFeedback(corrected: Label) {
     try {
@@ -56,19 +57,25 @@ export default function ResultCard({ result, language, message }: Props) {
           className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-surface2 text-mid hover:text-green hover:border-green text-sm font-mono transition-all disabled:opacity-50"
         >
           {audioLoading ? (
-  <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
-  </svg>
-) : playing ? "⏸" : "🔊"}
-<span>{audioLoading ? "Loading…" : playing ? "Stop" : "Listen"}</span>
+            <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+            </svg>
+          ) : playing ? "⏸" : "🔊"}
+          <span>
+            {audioLoading
+              ? t("result_loading")
+              : playing
+              ? t("result_stop")
+              : t("result_listen")}
+          </span>
         </button>
       </div>
 
       {/* Confidence bar */}
       <div className="space-y-1.5">
         <div className="flex justify-between items-center text-xs font-mono text-mid">
-          <span>Confidence</span>
+          <span>{t("result_confidence")}</span>
           <span className={isSpam ? "text-danger" : "text-green"}>{result.confidence}%</span>
         </div>
         <div className="h-2 rounded-full bg-surface2 overflow-hidden">
@@ -76,16 +83,13 @@ export default function ResultCard({ result, language, message }: Props) {
             initial={{ width: 0 }}
             animate={{ width: `${result.confidence}%` }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className={clsx(
-              "h-full rounded-full",
-              isSpam ? "bg-danger" : "bg-green"
-            )}
+            className={clsx("h-full rounded-full", isSpam ? "bg-danger" : "bg-green")}
           />
         </div>
         <div className="flex justify-between text-xs text-dim font-mono">
-          <span>Spam: {result.rf_proba}%</span>
-          <span>Legit: {result.svm_proba}%</span>
-          <span className="capitalize">{result.mode === "ml" ? "" : ""}</span>
+          <span>{t("result_spam_prob")}: {result.rf_proba}%</span>
+          <span>{t("result_legit_prob")}: {result.svm_proba}%</span>
+          <span>{result.mode === "ml" ? t("result_ml_model") : t("result_rule_engine")}</span>
         </div>
       </div>
 
@@ -96,24 +100,12 @@ export default function ResultCard({ result, language, message }: Props) {
         </div>
       )}
 
-      {/* Keywords 
-     // {result.keywords.length > 0 && (
-        <div className="space-y-2">
-          <p className="text-xs font-mono text-dim uppercase tracking-wider">Suspicious Keywords</p>
-          <div className="flex flex-wrap gap-2">
-            {result.keywords.map((kw) => (
-              <span key={kw} className="px-2 py-1 rounded-md bg-danger/10 border border-danger/25 text-danger text-xs font-mono">
-                {kw}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}*/}
-
       {/* Categories */}
       {result.categories.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs font-mono text-dim uppercase tracking-wider">Fraud Categories</p>
+          <p className="text-xs font-mono text-dim uppercase tracking-wider">
+            {t("result_categories")}
+          </p>
           <div className="flex flex-wrap gap-2">
             {result.categories.map((cat) => (
               <span key={cat} className="px-2 py-1 rounded-md bg-surface2 border border-border text-mid text-xs font-mono">
@@ -127,29 +119,29 @@ export default function ResultCard({ result, language, message }: Props) {
       {/* Feedback */}
       <div className="pt-2 border-t border-border">
         {feedbackSent ? (
-          <p className="text-xs text-green font-mono">✓ Feedback recorded. Thank you!</p>
+          <p className="text-xs text-green font-mono">✓ {t("result_feedback_thanks")}</p>
         ) : feedbackError ? (
-          <p className="text-xs text-danger font-mono">Failed to send feedback.</p>
+          <p className="text-xs text-danger font-mono">{t("result_feedback_error")}</p>
         ) : (
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
             <div className="flex items-center gap-3 flex-wrap">
-              <span className="text-xs text-dim font-mono">Wrong result?</span>
+              <span className="text-xs text-dim font-mono">{t("result_wrong")}?</span>
               <button
                 onClick={() => handleFeedback(result.label === "spam" ? "legitimate" : "spam")}
                 className="text-xs font-mono text-mid hover:text-gold border border-border hover:border-gold px-2 py-1 rounded transition-all"
               >
-                Mark as {result.label === "spam" ? "Legitimate" : "Spam"}
+                {t("result_mark_as")} {result.label === "spam" ? "Legitimate" : "Spam"}
               </button>
             </div>
-            
+
             {isSpam && (
-              <Link 
-                to="/report" 
+              <Link
+                to="/report"
                 state={{ message }}
                 className="px-3 py-1.5 text-xs font-bold font-mono tracking-wider uppercase text-bg bg-danger hover:bg-danger/90 rounded transition-all inline-flex items-center gap-2 self-start sm:self-auto"
               >
-                <span>Report Number</span>
-                <span className="text-bg">→</span>
+                <span>{t("result_report_number")}</span>
+                <span>→</span>
               </Link>
             )}
           </div>

@@ -4,7 +4,7 @@ import DetectPage from "@/pages/DetectPage";
 import ReportPage from "@/pages/ReportPage";
 import AdminPage  from "@/pages/AdminPage";
 import LandingPage from "@/pages/LandingPage";
-
+import NumbersPage from "@/pages/Numberspage";
 export default function App() {
   return (
     <BrowserRouter>
@@ -16,6 +16,7 @@ export default function App() {
             <Route path="/detect" element={<DetectPage />} />
             <Route path="/report" element={<ReportPage />} />
             <Route path="/admin"  element={<AdminPage />}  />
+            <Route path="/numbers" element={<NumbersPage />} />
           </Routes>
         </main>
       </div>

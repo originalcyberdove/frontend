@@ -95,7 +95,7 @@ export async function getAudioBlob(
       label:          result.label,
       confidence:     result.confidence,
       risk_level:     result.risk_level,
-      recommendation: (result as any).recommendation ?? "",
+      //recommendation: (result as any).recommendation ?? "",
       language,
     },
     { responseType: "blob" }
@@ -187,4 +187,15 @@ export async function getAdminFeedback(): Promise<FeedbackItem[]> {
 
 export function getExportURL(): string {
   return `${BASE}/api/admin/export/`;
+}
+export async function lookupNumber(number: string) {
+  const { data } = await client.get(
+    `/api/numbers/lookup/?number=${encodeURIComponent(number)}`
+  );
+  return data;
+}
+
+export async function getDirectory() {
+  const { data } = await client.get('/api/numbers/directory/');
+  return data;
 }

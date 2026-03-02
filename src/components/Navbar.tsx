@@ -22,8 +22,9 @@ export default function Navbar() {
   const currentOption = LANG_OPTIONS.find(l => l.code === currentLang) ?? LANG_OPTIONS[0];
 
   const LINKS = [
-   { to: "/detect", label: t("nav_detect") },
-   { to: "/report", label: t("nav_report") },
+  { to: "/detect",  label: t("nav_detect")  },
+  { to: "/numbers", label: t("nav_numbers") },
+  { to: "/report",  label: t("nav_report")  },
 ];
 
   function handleLangChange(code: Language) {
