@@ -4,7 +4,7 @@ import DetectPage from "@/pages/DetectPage";
 import ReportPage from "@/pages/ReportPage";
 import AdminPage  from "@/pages/AdminPage";
 import LandingPage from "@/pages/LandingPage";
-import NumbersPage from "@/pages/Numberspage";
+import NumbersPage from "@/pages/NumbersPage";
 export default function App() {
   return (
     <BrowserRouter>
