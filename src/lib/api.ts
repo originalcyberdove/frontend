@@ -5,33 +5,30 @@ import type {
   FeedbackItem, Language, Label, Risk,
 } from "@/types";
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+// In dev, Vite proxies /api → http://localhost:8000
+// In prod, set VITE_API_BASE in .env (e.g. https://api.fraudlock.ng)
+const BASE = import.meta.env.VITE_API_BASE ?? "";
 
 const client = axios.create({
-  baseURL: BASE_URL,
+  baseURL: import.meta.env.VITE_API_URL ?? "http://localhost:8000",
   headers: { "Content-Type": "application/json" },
 });
 
-// ── Auth token injection ──────────────────────────────────────────────────────
+// ── Helpers ─────────────────────────────────────────────────────────────────
 
-client.interceptors.request.use((config) => {
-  const token = localStorage.getItem("pg_access_token");
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
+/** Map backend classification → frontend label */
 function toLabel(cls: RawBackendResult["classification"]): Label {
   return cls === "safe" ? "legitimate" : "spam";
 }
 
+/** Map backend risk_score → frontend Risk enum */
 function toRisk(score: number, cls: RawBackendResult["classification"]): Risk {
   if (cls === "phishing" || score >= 8) return "High";
   if (cls === "suspicious" || score >= 4) return "Medium";
   return "Low";
 }
 
+/** Map indicator keywords to fraud category slugs for the UI */
 function toCategories(indicators: string[]): string[] {
   const mapping: Record<string, string> = {
     bvn: "bank_identity", "account number": "bank_identity", pin: "bank_identity",
@@ -49,12 +46,18 @@ function toCategories(indicators: string[]): string[] {
   return [...cats];
 }
 
+/** Generate a simple client-side detection ID (backend doesn't provide one) */
 function generateDetectionId(): string {
   return `det_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
-// ── SMS Detection ─────────────────────────────────────────────────────────────
+// ── Public API ──────────────────────────────────────────────────────────────
 
+/**
+ * Detect SMS fraud via POST /api/check-message/
+ * Maps the raw backend response into the DetectResult shape
+ * the rest of the frontend expects.
+ */
 export async function detectSMS(
   message: string,
   language: Language = "en"
@@ -79,22 +82,30 @@ export async function detectSMS(
   };
 }
 
-// ── Audio TTS ─────────────────────────────────────────────────────────────────
-
+/**
+ * Get audio blob for TTS.
+ */
 export async function getAudioBlob(
   result: { label: string; confidence: number; risk_level: string; recommendation?: string },
   language: Language = "en"
 ): Promise<Blob> {
   const response = await client.post(
     "/api/audio/",
-    { label: result.label, confidence: result.confidence, risk_level: result.risk_level, language },
+    {
+      label:          result.label,
+      confidence:     result.confidence,
+      risk_level:     result.risk_level,
+      //recommendation: (result as any).recommendation ?? "",
+      language,
+    },
     { responseType: "blob" }
   );
   return new Blob([response.data], { type: "audio/mpeg" });
 }
-
-// ── Reporting ─────────────────────────────────────────────────────────────────
-
+/**
+ * Report a scam number.
+ * Will work automatically once backend adds POST /api/report/.
+ */
 export async function reportNumber(
   number: string,
   message: string,
@@ -107,8 +118,10 @@ export async function reportNumber(
   return data;
 }
 
-// ── Feedback ──────────────────────────────────────────────────────────────────
-
+/**
+ * Submit feedback on a detection result.
+ * Will work automatically once backend adds POST /api/feedback/.
+ */
 export async function submitFeedback(
   detection_id: string,
   original_label: Label,
@@ -120,9 +133,16 @@ export async function submitFeedback(
   });
 }
 
-// ── Auth ──────────────────────────────────────────────────────────────────────
+// ── Auth ────────────────────────────────────────────────────────────────────
 
-export async function loginAdmin(username: string, password: string): Promise<void> {
+/**
+ * Admin login via JWT.
+ * Will work automatically once backend adds POST /api/auth/token/.
+ */
+export async function loginAdmin(
+  username: string,
+  password: string
+): Promise<void> {
   const { data } = await client.post<{ access: string; refresh: string }>(
     "/api/auth/token/",
     { username, password }
@@ -140,7 +160,7 @@ export function isLoggedIn(): boolean {
   return !!localStorage.getItem("pg_access_token");
 }
 
-// ── Admin API ─────────────────────────────────────────────────────────────────
+// ── Admin API ───────────────────────────────────────────────────────────────
 
 export async function getAdminStats(): Promise<AdminStats> {
   const { data } = await client.get<AdminStats>("/api/admin/stats/");
@@ -166,17 +186,16 @@ export async function getAdminFeedback(): Promise<FeedbackItem[]> {
 }
 
 export function getExportURL(): string {
-  return `${BASE_URL}/api/admin/export/`;
+  return `${BASE}/api/admin/export/`;
 }
-
-// ── Number Lookup ─────────────────────────────────────────────────────────────
-
 export async function lookupNumber(number: string) {
-  const { data } = await client.get(`/api/numbers/lookup/?number=${encodeURIComponent(number)}`);
+  const { data } = await client.get(
+    `/api/numbers/lookup/?number=${encodeURIComponent(number)}`
+  );
   return data;
 }
 
 export async function getDirectory() {
-  const { data } = await client.get("/api/numbers/directory/");
+  const { data } = await client.get('/api/numbers/directory/');
   return data;
 }
