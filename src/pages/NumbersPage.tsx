@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { lookupNumber, getDirectory } from "@/lib/api";
 import type { NumberLookupResult, DirectoryEntry } from "@/types";
-import CarrierBadge from "@/components/CarrierBadge";
+import CarrierBadge from "@/components/carrierbadge";
 type Tab = "lookup" | "directory";
 
 // Carrier config — logos from brand CDNs that allow hotlinking
