@@ -155,38 +155,6 @@ export default function DetectPage() {
         <p className="text-mid text-sm">{t("detect_subtitle")}</p>
       </div>
 
-      {/* Language + Auto-play row */}
-      <div className="flex items-end justify-between gap-4 flex-wrap">
-        <div className="space-y-2">
-          <p className="text-xs text-dim font-mono uppercase tracking-wider">
-            {t("detect_language_label")}
-          </p>
-          <LanguageSelector value={language} onChange={handleLanguageChange} />
-        </div>
-
-        {/* Auto-play toggle */}
-        <div className="flex flex-col items-end gap-1.5">
-          <p className="text-xs text-dim font-mono uppercase tracking-wider">
-            {t("detect_autoplay_label")}
-          </p>
-          <button
-            onClick={toggleAutoPlay}
-            aria-label="Toggle auto-play audio"
-            className={`relative w-11 h-6 rounded-full border transition-all duration-200 ${
-              autoPlay
-                ? "bg-green/20 border-green/50"
-                : "bg-surface2 border-border"
-            }`}
-          >
-            <span
-              className={`absolute top-0.5 w-5 h-5 rounded-full transition-all duration-200 ${
-                autoPlay ? "left-5 bg-green" : "left-0.5 bg-dim"
-              }`}
-            />
-          </button>
-        </div>
-      </div>
-
       {/* Input */}
       <div className="space-y-3">
         <div className="relative">
@@ -223,20 +191,7 @@ export default function DetectPage() {
           </button>
         </div>
 
-        {/* Voice hint — shown while mic is active */}
-        <AnimatePresence>
-          {voiceHint && (
-            <motion.p
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="text-xs text-green font-mono flex items-center gap-1.5"
-            >
-              <span className="w-2 h-2 rounded-full bg-green animate-pulse inline-block" />
-              {voiceHint}
-            </motion.p>
-          )}
-        </AnimatePresence>
+        
 
         {/* Voice error */}
         <AnimatePresence>
