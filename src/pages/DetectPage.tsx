@@ -35,7 +35,7 @@ export default function DetectPage() {
   const [message,    setMessage]    = useState("");
   const [language,   setLanguage]   = useState<Language>(normalise(i18n.language));
   const [autoPlay,   setAutoPlay]   = useState(() =>
-    localStorage.getItem("fraudlock_autoplay") === "true"
+    localStorage.getItem("fraudlock_autoplay") === "false"
   );
   const [listening,  setListening]  = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
