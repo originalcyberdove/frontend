@@ -53,28 +53,6 @@ export default function DetectPage() {
     setLanguage(normalise(i18n.language));
   }, [i18n.language]);
 
-  // Auto-play when result arrives
-  useEffect(() => {
-    if (result && autoPlay) {
-      play(result, language);
-    }
-  }, [result]);
-
-  function toggleAutoPlay() {
-    const next = !autoPlay;
-    setAutoPlay(next);
-    localStorage.setItem("fraudlock_autoplay", String(next));
-  }
-
-  function handleSubmit() {
-    if (!message.trim() || loading) return;
-    analyze(message, language);
-  }
-
-  function loadExample(ex: string) {
-    setMessage(ex);
-    reset();
-  }
 
   // ── Voice command ──────────────────────────────────────────────────────────
 
@@ -143,7 +121,15 @@ export default function DetectPage() {
     setListening(false);
     setVoiceHint(null);
   }
+function handleSubmit() {
+  if (!message.trim() || loading) return;
+  analyze(message, language);
+}
 
+function loadExample(ex: string) {
+  setMessage(ex);
+  reset();
+}
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 space-y-8">
 
