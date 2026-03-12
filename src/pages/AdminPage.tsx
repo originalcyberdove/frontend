@@ -365,9 +365,6 @@ function FeedbackTab({ feedback }: { feedback: FeedbackItem[] }) {
     <div className="space-y-3">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <p className="text-xs text-dim font-mono">{feedback.length} corrections pending retraining</p>
-        <code className="text-[10px] font-mono text-mid bg-surface border border-border px-2 py-1 rounded-lg">
-          python train_and_test.py --data dataset.csv
-        </code>
       </div>
       <div className="rounded-xl border border-border overflow-hidden">
         <table className="w-full text-sm">
