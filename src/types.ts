@@ -73,7 +73,6 @@ export interface DetectionLog {
   indicators:   string[];
   timestamp:    string;
 }
-
 export interface ReportedNumber {
   number:          string;
   report_count:    number;
