@@ -73,6 +73,7 @@ export interface DetectionLog {
   indicators:   string[];
   timestamp:    string;
 }
+
 export interface ReportedNumber {
   number:          string;
   report_count:    number;
@@ -98,51 +99,4 @@ export interface FeedbackItem {
   language:        string;
   timestamp:       string;
   processed:       boolean;
-}
-// ── Language labels ───────────────────────────────────────────────────────────
-
-export const LANG_LABELS: Record<Language, string> = {
-  en:  "English",
-  pid: "Nigerian Pidgin",
-  yo:  "Yoruba",
-  ha:  "Hausa",
-  ig:  "Igbo",
-};
-
-// ── Category labels ───────────────────────────────────────────────────────────
-
-export const CATEGORY_LABELS: Record<string, string> = {
-  bank_identity:    "Bank / Identity",
-  education_scam:   "Education Scam",
-  prize_lottery:    "Prize / Lottery",
-  investment_fraud: "Investment Fraud",
-  impersonation:    "Impersonation",
-  phishing_url:     "Phishing URL",
-};
-
-// ── Number lookup ─────────────────────────────────────────────────────────────
-
-export interface NumberLookupResult {
-  found:            boolean;
-  number:           string;
-  report_count:     number;
-  auto_flagged:     boolean;
-  predicted_label?: string;
-  first_reported?:  string;
-  last_reported?:   string;
-  flagged_at?:      string | null;
-  threshold:        number;
-  network?:         string | null;
-  network_code?:    string | null;
-  dnd?:             boolean | null;
-  carrier_status?:  string | null;
-}
-
-export interface DirectoryEntry {
-  number:         string;
-  report_count:   number;
-  auto_flagged:   boolean;
-  flagged_at:     string | null;
-  first_reported: string;
-  last_reported:  string;
 }
