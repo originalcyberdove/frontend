@@ -135,3 +135,37 @@ export interface DirectoryEntry {
   first_reported: string;
   last_reported:  string;
 }
+
+// Add these to your types file (e.g., src/types/index.ts)
+
+export type Label = "spam" | "legitimate";
+export type Risk = "low" | "medium" | "high";
+
+export const LANG_LABELS: Record<string, string> = {
+  en: "English",
+  yo: "Yoruba",
+  ha: "Hausa",
+  ig: "Igbo",
+  pidgin: "Pidgin"
+};
+
+export const CATEGORY_LABELS: Record<string, string> = {
+  fraud: "Fraud/Scam",
+  marketing: "Marketing",
+  personal: "Personal",
+  service: "Service"
+};
+
+export interface NumberLookupResult {
+  number: string;
+  is_flagged: boolean;
+  reports: number;
+  // add other fields as needed
+}
+
+export interface DirectoryEntry {
+  id: string;
+  name: string;
+  category: string;
+  // add other fields as needed
+}

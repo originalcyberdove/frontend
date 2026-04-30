@@ -285,9 +285,9 @@ function LogsTab({ logs }: { logs: DetectionLog[] }) {
               <motion.tr key={log.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.01 }}
                 className="border-t border-border hover:bg-surface transition-colors">
                 <td className="px-4 py-3 font-mono text-dim text-xs">#{log.id}</td>
-                <td className="px-4 py-3"><LabelBadge label={log.label} /></td>
+                <td className="px-4 py-3"><LabelBadge label={log.label as Label} /></td>
                 <td className="px-4 py-3 font-mono text-text font-bold">{log.confidence}%</td>
-                <td className="px-4 py-3"><RiskBadge risk={log.risk_level} /></td>
+                <td className="px-4 py-3"><RiskBadge risk={log.risk_level as Risk} /></td>
                 <td className="px-4 py-3 font-mono text-mid text-xs uppercase">{log.language}</td>
                 <td className="px-4 py-3 font-mono text-dim text-xs">{log.mode}</td>
                 <td className="px-4 py-3 font-mono text-dim text-xs">{new Date(log.timestamp).toLocaleString()}</td>
