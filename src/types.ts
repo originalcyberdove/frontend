@@ -3,6 +3,7 @@
 export type Language = "en" | "pid" | "yo" | "ha" | "ig";
 export type Label    = "spam" | "legitimate";
 export type Risk     = "High" | "Medium" | "Low";
+export type Mode     = "ml" | "rule_based";
 
 // ── Raw backend response ──────────────────────────────────────────────────────
 
@@ -30,7 +31,7 @@ export interface DetectResult {
   categories:     string[];
   rf_proba:       number;
   svm_proba:      number;
-  mode:           string;
+  mode:           Mode;
   detection_id:   string;
   recommendation: string;
   message:        string;
@@ -65,11 +66,11 @@ export interface AdminStats {
 export interface DetectionLog {
   id:           number;
   detection_id: string;
-  label:        string;
+  label:        Label;
   confidence:   number;
-  risk_level:   string;
-  language:     string;
-  mode:         string;
+  risk_level:   Risk;
+  language:     Language;
+  mode:         Mode;
   indicators:   string[];
   timestamp:    string;
 }
@@ -77,7 +78,7 @@ export interface DetectionLog {
 export interface ReportedNumber {
   number:          string;
   report_count:    number;
-  language:        string;
+  language:        Language;
   predicted_label: string;
   first_reported:  string;
   last_reported:   string;
@@ -94,9 +95,57 @@ export interface FlaggedNumber {
 export interface FeedbackItem {
   id:              number;
   detection_id:    string;
-  original_label:  string;
-  corrected_label: string;
-  language:        string;
+  original_label:  Label;
+  corrected_label: Label;
+  language:        Language;
   timestamp:       string;
   processed:       boolean;
 }
+
+// ── Number lookup ─────────────────────────────────────────────────────────────
+
+export interface NumberLookupResult {
+  found:           boolean;
+  number:          string;
+  report_count:    number;
+  auto_flagged:    boolean;
+  predicted_label: string;
+  first_reported:  string;
+  last_reported:   string;
+  flagged_at:      string | null;
+  threshold:       number;
+  network:         string | null;
+  network_code:    string | null;
+  dnd:             boolean | null;
+  carrier_status:  string | null;
+}
+
+export interface DirectoryEntry {
+  number:         string;
+  report_count:   number;
+  auto_flagged:   boolean;
+  flagged_at:     string | null;
+  first_reported: string;
+  last_reported:  string;
+}
+
+// ── Display maps ──────────────────────────────────────────────────────────────
+
+export const LANG_LABELS: Record<Language, string> = {
+  en:  "English",
+  pid: "Pidgin",
+  yo:  "Yorùbá",
+  ha:  "Hausa",
+  ig:  "Igbo",
+};
+
+export const CATEGORY_LABELS: Record<string, string> = {
+  bank_identity:    "Bank / Identity",
+  education_scam:   "Education Scam",
+  investment_fraud: "Investment Fraud",
+  telecom_fraud:    "Telecom Fraud",
+  prize_lottery:    "Prize / Lottery",
+  loan_harassment:  "Loan Harassment",
+  pos_fraud:        "POS Fraud",
+  general_phishing: "General Phishing",
+};
