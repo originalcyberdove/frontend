@@ -5,7 +5,7 @@ import {
   getAdminStats, getAdminLogs, getAdminNumbers, getAdminFeedback, getExportURL,
   flagNumber, unflagNumber,
 } from "@/lib/api";
-import type { AdminStats, DetectionLog, ReportedNumber, FlaggedNumber, FeedbackItem } from "@/types";
+import type { AdminStats, DetectionLog, ReportedNumber, FlaggedNumber, FeedbackItem, Label, Risk } from "@/types";
 import { RiskBadge, LabelBadge } from "@/components/RiskBadge";
 import clsx from "clsx";
 
@@ -204,10 +204,10 @@ function OverviewTab({ stats }: { stats: AdminStats }) {
   const cards = [
     { label: "Total Scanned",     value: (stats.total_scanned    ?? 0).toLocaleString(), color: "text-text",   icon: "📊", border: "border-border"    },
     { label: "Spam Detected",     value: (stats.spam_detected    ?? 0).toLocaleString(), color: "text-danger", icon: "🚨", border: "border-danger/20" },
-    { label: "Spam Rate",         value: spamRate,                                         color: "text-gold",   icon: "📈", border: "border-gold/20"   },
+    { label: "Spam Rate",         value: spamRate,                                        color: "text-gold",   icon: "📈", border: "border-gold/20"   },
     { label: "Reported Numbers",  value: (stats.reported_numbers ?? 0).toLocaleString(), color: "text-mid",    icon: "📞", border: "border-border"    },
     { label: "Flagged for Telco", value: (stats.flagged_telco    ?? 0).toLocaleString(), color: "text-danger", icon: "🔴", border: "border-danger/20" },
-    { label: "Model Accuracy",    value: accuracy,                                         color: "text-green",  icon: "🎯", border: "border-green/20"  },
+    { label: "Model Accuracy",    value: accuracy,                                        color: "text-green",  icon: "🎯", border: "border-green/20"  },
   ];
 
   return (
@@ -250,7 +250,7 @@ function LogsTab({ logs }: { logs: DetectionLog[] }) {
 
   const filtered = logs.filter(l => {
     const matchLabel = filterLabel === "all" || l.label === filterLabel;
-    const matchSearch = !search || l.detection_id?.toLowerCase().includes(search.toLowerCase());
+    const matchSearch = !search || String(l.id).includes(search) || l.detection_id?.toLowerCase().includes(search.toLowerCase());
     return matchLabel && matchSearch;
   });
 
@@ -259,7 +259,7 @@ function LogsTab({ logs }: { logs: DetectionLog[] }) {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap gap-2 items-center">
-        <input type="text" placeholder="Search detection ID…" value={search}
+        <input type="text" placeholder="Search by ID…" value={search}
           onChange={e => setSearch(e.target.value)}
           className="bg-surface border border-border rounded-lg px-3 py-1.5 text-xs font-mono text-text placeholder-dim focus:outline-none focus:border-green transition-colors w-48" />
         {(["all", "spam", "legitimate"] as const).map(f => (
@@ -285,9 +285,9 @@ function LogsTab({ logs }: { logs: DetectionLog[] }) {
               <motion.tr key={log.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.01 }}
                 className="border-t border-border hover:bg-surface transition-colors">
                 <td className="px-4 py-3 font-mono text-dim text-xs">#{log.id}</td>
-                <td className="px-4 py-3"><LabelBadge label={log.label} /></td>
+                <td className="px-4 py-3"><LabelBadge label={log.label as Label} /></td>
                 <td className="px-4 py-3 font-mono text-text font-bold">{log.confidence}%</td>
-                <td className="px-4 py-3"><RiskBadge risk={log.risk_level} /></td>
+                <td className="px-4 py-3"><RiskBadge risk={log.risk_level as Risk} /></td>
                 <td className="px-4 py-3 font-mono text-mid text-xs uppercase">{log.language}</td>
                 <td className="px-4 py-3 font-mono text-dim text-xs">{log.mode}</td>
                 <td className="px-4 py-3 font-mono text-dim text-xs">{new Date(log.timestamp).toLocaleString()}</td>
@@ -533,11 +533,11 @@ function FeedbackTab({ feedback }: { feedback: FeedbackItem[] }) {
               <motion.tr key={f.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }}
                 className="border-t border-border hover:bg-surface transition-colors">
                 <td className="px-4 py-3 font-mono text-dim text-xs">#{f.id}</td>
-                <td className="px-4 py-3"><LabelBadge label={f.original_label} /></td>
+                <td className="px-4 py-3"><LabelBadge label={f.original_label as Label} /></td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-1.5">
                     <span className="text-dim text-xs">→</span>
-                    <LabelBadge label={f.corrected_label} />
+                    <LabelBadge label={f.corrected_label as Label} />
                   </div>
                 </td>
                 <td className="px-4 py-3 font-mono text-mid text-xs uppercase">{f.language}</td>
